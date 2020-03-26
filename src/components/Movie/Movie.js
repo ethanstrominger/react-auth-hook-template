@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom'
 // Import Axios:
 import axios from 'axios'
 // Import apiConfig:
-import apiUrl from '../apiConfig'
+import apiUrl from '../../apiConfig'
 
 class Movie extends Component {
   constructor () {
@@ -17,7 +17,13 @@ class Movie extends Component {
   }
 
   componentDidMount () {
-    axios(`${apiUrl}/movies/${this.props.match.params.id}`)
+    axios({
+      url: `${apiUrl}/movies/${this.props.match.params.id}`,
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${this.props.user.token}`
+      }
+    })
       .then(res => {
         this.setState({ movie: res.data.movie })
       })
@@ -25,7 +31,13 @@ class Movie extends Component {
   }
 
   delete = (event) => {
-    axios.delete(`${apiUrl}/movies/${this.props.match.params.id}`)
+    axios({
+      method: 'delete',
+      url: `${apiUrl}/movies/${this.props.match.params.id}`,
+      headers: {
+        Authorization: `Bearer ${this.props.user.token}`
+      }
+    })
       .then(() => {
         this.setState({ deleted: true })
       })
