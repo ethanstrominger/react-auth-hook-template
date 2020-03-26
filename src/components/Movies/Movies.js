@@ -53,8 +53,8 @@ class Movies extends Component {
     } else {
       // Otherwise, display the movies
       const moviesList = movies.map(movie => (
-        <li key={movie.id}>
-          <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+        <li key={movie._id}>
+          <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
         </li>
       ))
 
