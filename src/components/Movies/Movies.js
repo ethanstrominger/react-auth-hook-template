@@ -30,7 +30,13 @@ class Movies extends Component {
         console.log(res)
         this.setState({ movies: res.data.movies })
       })
-      .catch(console.error)
+      .catch(err => {
+        this.props.msgAlert({
+          heading: 'Movies List failed to load',
+          message: err.message,
+          variant: 'danger'
+        })
+      })
   }
 
   render () {
