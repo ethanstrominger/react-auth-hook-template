@@ -10,6 +10,7 @@ import SignIn from '../SignIn/SignIn'
 import SignOut from '../SignOut/SignOut'
 import ChangePassword from '../ChangePassword/ChangePassword'
 import Movies from '../Movies/Movies'
+import Movie from '../Movie/Movie'
 
 // We want to have state at the highest level possible in our app
 // So `App` is a class component
@@ -79,8 +80,11 @@ class App extends Component {
           <AuthenticatedRoute user={user} path='/change-password' render={() => (
             <ChangePassword msgAlert={this.msgAlert} user={user} />
           )} />
-          <AuthenticatedRoute user={user} path='/movies' render={() => (
+          <AuthenticatedRoute exact user={user} path='/movies' render={() => (
             <Movies msgAlert={this.msgAlert} user={user} />
+          )} />
+          <AuthenticatedRoute exact user={user} path='/movies/:id' render={({ match }) => (
+            <Movie match={match} msgAlert={this.msgAlert} user={user} />
           )} />
         </main>
       </Fragment>
