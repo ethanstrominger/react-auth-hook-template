@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom'
 // Import Axios:
 import axios from 'axios'
 // Import apiConfig:
-import apiUrl from '../apiConfig'
-
-import Layout from '../shared/Layout'
+import apiUrl from '../../apiConfig'
 
 class Movies extends Component {
   constructor () {
@@ -21,7 +19,13 @@ class Movies extends Component {
   componentDidMount () {
     // Run once, when the component mounts
     // This is where our API request will go
-    axios(`${apiUrl}/movies`)
+    axios({
+      url: `${apiUrl}/movies`,
+      method: 'get',
+      headers: {
+        'Authorization': `Bearer ${this.props.user.token}`
+      }
+    })
       .then(res => {
         console.log(res)
         this.setState({ movies: res.data.movies })
@@ -55,10 +59,10 @@ class Movies extends Component {
       )
     }
     return (
-      <Layout>
+      <React.Fragment>
         <h1>Movies Page</h1>
         {movieJSX}
-      </Layout>
+      </React.Fragment>
     )
   }
 }
