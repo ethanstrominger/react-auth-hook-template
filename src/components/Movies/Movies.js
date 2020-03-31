@@ -25,12 +25,23 @@ class Movies extends Component {
       headers: {
         'Authorization': `Bearer ${this.props.user.token}`
       }
+<<<<<<< HEAD
     })
+=======
+    }
+    )
+>>>>>>> 93503fe332b9b74c8872635e629a4eb022fb1102
       .then(res => {
         console.log(res)
         this.setState({ movies: res.data.movies })
       })
       .catch(err => {
+<<<<<<< HEAD
+=======
+        const keys = Object.keys(err)
+        const values = Object.values(err)
+        console.log(keys, values)
+>>>>>>> 93503fe332b9b74c8872635e629a4eb022fb1102
         this.props.msgAlert({
           heading: 'Movies List failed to load',
           message: err.message,
@@ -53,8 +64,13 @@ class Movies extends Component {
     } else {
       // Otherwise, display the movies
       const moviesList = movies.map(movie => (
+<<<<<<< HEAD
         <li key={movie._id}>
           <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+=======
+        <li key={movie.id}>
+          <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+>>>>>>> 93503fe332b9b74c8872635e629a4eb022fb1102
         </li>
       ))
 
