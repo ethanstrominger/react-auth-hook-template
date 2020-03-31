@@ -38,7 +38,6 @@ class App extends Component {
       email: process.env.REACT_APP_AUTO_LOGIN_EMAIL,
       password: process.env.REACT_APP_AUTO_LOGIN_PASSWORD
     }
-    console.log(credentials)
     signIn(credentials)
       .then(res => this.setUser(res.data.user))
       .then(() => this.msgAlert({
