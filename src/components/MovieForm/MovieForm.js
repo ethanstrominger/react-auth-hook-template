@@ -8,6 +8,7 @@ const MovieForm = ({ movie, handleSubmit, handleChange }) => (
       name="title"
       value={movie.title || ''}
       onChange={handleChange}
+      required
     />
     <label>Director</label>
     <input
@@ -15,6 +16,7 @@ const MovieForm = ({ movie, handleSubmit, handleChange }) => (
       name="director"
       value={movie.director || ''}
       onChange={handleChange}
+      required
     />
     <label>Year Released</label>
     <input
@@ -23,6 +25,7 @@ const MovieForm = ({ movie, handleSubmit, handleChange }) => (
       value={movie.year || ''}
       type="date"
       onChange={handleChange}
+      required
     />
     <button type="submit">Submit</button>
   </form>
