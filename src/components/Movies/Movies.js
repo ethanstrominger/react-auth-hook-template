@@ -25,7 +25,16 @@ class Movies extends Component {
       headers: {
         'Authorization': `Bearer ${this.props.user.token}`
       }
+<<<<<<< HEAD
     })
+=======
+<<<<<<< HEAD
+    })
+=======
+    }
+    )
+>>>>>>> 93503fe332b9b74c8872635e629a4eb022fb1102
+>>>>>>> a9a46382c062ec2b0c6336a0497e9ad026c3d05c
       .then(res => {
         console.log(res)
         this.setState({ movies: res.data.movies })
