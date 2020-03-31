@@ -13,6 +13,8 @@ import Movies from '../Movies/Movies'
 import Movie from '../Movie/Movie'
 import MovieCreate from '../MovieCreate/MovieCreate'
 import MovieEdit from '../MovieEdit/MovieEdit'
+import messages from '../AutoDismissAlert/messages'
+import { signIn } from '../../api/auth.js'
 
 // We want to have state at the highest level possible in our app
 // So `App` is a class component
@@ -25,6 +27,37 @@ class App extends Component {
       user: null,
       msgAlerts: []
     }
+    console.log('Log in', process.env)
+    if (process.env.REACT_APP_AUTO_LOGIN_EMAIL) {
+      this.autoLogin()
+    }
+  }
+
+  autoLogin = () => {
+    const credentials = {
+      email: process.env.REACT_APP_AUTO_LOGIN_EMAIL,
+      password: process.env.REACT_APP_AUTO_LOGIN_PASSWORD
+    }
+    console.log(credentials)
+    signIn(credentials)
+      .then(res => this.setUser(res.data.user))
+      .then(() => this.msgAlert({
+        heading: 'Auto Sign In Success',
+        message: messages.signInSuccess,
+        variant: 'success'
+      }))
+      .then(() => history.push('/'))
+      .catch(error => {
+        this.setState({
+          email: '',
+          password: ''
+        })
+        this.msgAlert({
+          heading: 'Auto sign In Failed with error: ' + error.message,
+          message: messages.signInFailure,
+          variant: 'danger'
+        })
+      })
   }
 
   // This method is passed as a prop to `SignIn` and `SignUp`
