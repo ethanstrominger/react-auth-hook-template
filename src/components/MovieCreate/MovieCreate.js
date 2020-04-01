@@ -35,7 +35,6 @@ class MovieCreate extends Component {
       }
     })
       .then(res => {
-        console.log(res.data)
         this.setState({ createdId: res.data.movie._id })
       })
       .catch(console.error)

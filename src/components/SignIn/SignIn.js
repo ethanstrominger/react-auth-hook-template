@@ -25,7 +25,6 @@ class SignIn extends Component {
     event.preventDefault()
 
     const { msgAlert, history, setUser } = this.props
-    console.log('credentials from menu ', this.state)
     signIn(this.state)
       .then(res => setUser(res.data.user))
       .then(() => msgAlert({

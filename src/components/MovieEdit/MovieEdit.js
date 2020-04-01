@@ -1,87 +1,44 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-
-// Import axios
-import axios from 'axios'
-// Import apiUrl
-import apiUrl from '../../apiConfig'
-
 import MovieForm from '../MovieForm/MovieForm'
+import MainLayout from '../MainLayout/MainLayout'
+import { saveUpdatedMovie, getMovieById } from '../../api/movieApis.js'
 
-class MovieEdit extends Component {
-  constructor () {
-    super()
+const MovieEdit = props => {
+  const [movie, setMovie] = useState({ title: '', director: '', year: '' })
+  const [isMovieUpdated, setIsMovieUpdated] = useState(false)
 
-    this.state = {
-      movie: {
-        title: '',
-        director: '',
-        year: ''
-      },
-      updated: false
-    }
-  }
-
-  componentDidMount () {
-    axios({
-      url: `${apiUrl}/movies/${this.props.match.params.id}`,
-      method: 'get',
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`
-      }
-    })
-      .then(res => {
-        this.setState({ movie: res.data.movie })
-      })
+  useEffect(() => {
+    getMovieById(props)
+      .then(res => setMovie(res.data.movie))
       .catch(console.error)
+  }, [])
+  const handleChange = event => {
+    const updatedField = { [event.target.name]: event.target.value }
+    const editedMovie = Object.assign({ ...movie }, updatedField)
+    // React doesn't like mutating objects/storing its data without using this.setState
+    // destructuring the movie, making a copy of the object to update it with the modified field
+    setMovie(editedMovie)
   }
-
-  handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault()
-
-    axios({
-      method: 'patch',
-      url: `${apiUrl}/movies/${this.props.match.params.id}`,
-      data: { movie: this.state.movie },
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`
-      }
-    })
-      .then(() => {
-        this.setState({ updated: true })
-      })
+    saveUpdatedMovie(props, movie)
+      .then(() => setIsMovieUpdated(true))
       .catch(console.error)
   }
-
-  handleChange = (event) => {
-    // create a new object with key of `name` property on input and value with `value` property
-    const updatedField = {
-      [event.target.name]: event.target.value
-    }
-    // Combine the current `movie` with the `updateField`
-    const editedMovie = Object.assign(this.state.movie, updatedField)
-    // Set the state
-    this.setState({ movie: editedMovie })
+  if (isMovieUpdated) {
+    return <Redirect to={`/movies/${props.match.params.id}`} />
   }
-
-  render () {
-    // Destructure from state:
-    const { movie, updated } = this.state
-    if (updated) {
-      // Redirect to the 'show' page
-      return <Redirect to={`/movies/${this.props.match.params.id}`}/>
-    }
-    return (
-      <div>
-        <h1>Movie Edit page</h1>
-        <MovieForm
-          movie={movie}
-          handleSubmit={this.handleSubmit}
-          handleChange={this.handleChange}
-        />
-      </div>
-    )
-  }
+  return (
+    <MainLayout>
+      <MovieForm
+        movie={movie}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        cancelPath={`/movies/${props.match.params.id}`}
+      />
+    </MainLayout>
+  )
 }
 
 export default MovieEdit

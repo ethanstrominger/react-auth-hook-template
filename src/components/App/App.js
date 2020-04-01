@@ -27,7 +27,7 @@ class App extends Component {
       user: null,
       msgAlerts: []
     }
-    console.log('Log in', process.env)
+
     if (process.env.REACT_APP_AUTO_LOGIN_EMAIL) {
       this.autoLogin()
     }
