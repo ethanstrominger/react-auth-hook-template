@@ -45,7 +45,6 @@ class App extends Component {
         message: messages.signInSuccess,
         variant: 'success'
       }))
-      .then(() => history.push('/'))
       .catch(error => {
         this.setState({
           email: '',
