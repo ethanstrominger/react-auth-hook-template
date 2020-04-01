@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom'
 import { createMovie } from '../../api/movieApis'
 import MovieForm from '../MovieForm/MovieForm'
 import MainLayout from '../MainLayout/MainLayout'
+import { getId } from '../../utils'
 
 const MovieCreate = props => {
   const [movie, setMovie] = useState({ title: '', director: '', year: '' })
@@ -23,7 +24,7 @@ const MovieCreate = props => {
     event.preventDefault()
 
     createMovie(props, movie)
-      .then(res => setCreatedMovieId(res.data.movie._id))
+      .then(res => setCreatedMovieId(getId(res.data.movie)))
       .catch(console.error)
   }
 

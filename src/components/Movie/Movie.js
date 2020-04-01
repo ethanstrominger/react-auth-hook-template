@@ -36,7 +36,7 @@ const Movie = props => {
   return (
     <MainLayout>
       <h4>{movie.title}</h4>
-      <p>Date relased: {movie.year}</p>
+      <p>Date released: {movie.year}</p>
       <p>Directed by: {movie.director}</p>
       <button onClick={destroy}>Delete Movie</button>
       <Link to={`/movies/${props.match.params.id}/edit`}>

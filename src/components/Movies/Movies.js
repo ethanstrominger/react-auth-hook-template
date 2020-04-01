@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../MainLayout/MainLayout'
 import { getMovies } from '../../api/movieApis'
+import { getId } from '../../utils'
 
 const Movies = props => {
   // NOTE on React Hook: useState is used by React Hooks to create state variables and
@@ -14,15 +15,15 @@ const Movies = props => {
   useEffect(() => {
     getMovies(props) // returns promise to get movies
       .then(res => {
-        setMovies(res.data.movies.filter(movie => movie._id !== undefined))
+        setMovies(res.data.movies.filter(movie => getId(movie) !== undefined))
       })
       .catch(console.error)
   }, [])
 
   // === set movieLinks to html bulleted list of movies ussing movies variable
-  const moviesLinks = movies.filter(movie => movie._id !== undefined).map(movie => (
-    <li key={`movie${movie._id}`}>
-      <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+  const moviesLinks = movies.filter(movie => getId(movie) !== undefined).map(movie => (
+    <li key={`movie${getId(movie)}`}>
+      <Link to={`/movies/${getId(movie)}`}>{movie.title}</Link>
     </li>
   ))
 
