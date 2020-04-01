@@ -1,7 +1,30 @@
 import apiUrl from '../apiConfig'
 import axios from 'axios'
 
-const getMovieById = (props) => {
+const createMovie = (props, movie) => {
+  return axios({
+    url: `${apiUrl}/movies/`,
+    method: 'POST',
+    data: {
+      movie: movie
+    },
+    headers: {
+      Authorization: `Bearer ${props.user.token}`
+    }
+  })
+}
+
+const destroyMovie = (props) => {
+  return axios({
+    url: `${apiUrl}/movies/${props.match.params.id}`,
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${props.user.token}`
+    }
+  })
+}
+
+const getMovie = (props) => {
   return axios({
     url: `${apiUrl}/movies/${props.match.params.id}`,
     method: 'GET',
@@ -35,7 +58,9 @@ const saveUpdatedMovie = (props, movie) => {
 }
 
 export {
-  getMovieById,
+  createMovie,
+  destroyMovie,
+  getMovie,
   getMovies,
   saveUpdatedMovie
 }

@@ -1,79 +1,50 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
+import MainLayout from '../MainLayout/MainLayout'
+import { getMovie, destroyMovie } from '../../api/movieApis'
 
-// Import Axios:
-import axios from 'axios'
-// Import apiConfig:
-import apiUrl from '../../apiConfig'
+const Movie = props => {
+  const [movie, setMovie] = useState(null)
+  const [deleted, setDeleted] = useState(false)
 
-class Movie extends Component {
-  constructor () {
-    super()
+  // Call this callback once after the first render, this only occurs once
+  // because our dependency array is empty, so our dependencies never change
+  // similar to componentDidMount
+  useEffect(() => {
+    getMovie(props)
+      // Make sure to update this.setState to our hooks setMovie function
+      .then(res => setMovie(res.data.movie))
+      .catch(console.error)
+  }, [])
 
-    this.state = {
-      movie: null,
-      deleted: false
-    }
-  }
-
-  componentDidMount () {
-    axios({
-      url: `${apiUrl}/movies/${this.props.match.params.id}`,
-      method: 'get',
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`
-      }
-    })
-      .then(res => {
-        this.setState({ movie: res.data.movie })
-      })
+  const destroy = () => {
+    destroyMovie(props)
+      .then(() => setDeleted(true))
       .catch(console.error)
   }
 
-  delete = (event) => {
-    axios({
-      method: 'delete',
-      url: `${apiUrl}/movies/${this.props.match.params.id}`,
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`
-      }
-    })
-      .then(() => {
-        this.setState({ deleted: true })
-      })
-      .catch(console.error)
+  if (!movie) {
+    return <p>Loading...</p>
   }
 
-  render () {
-    // Destructure from state:
-    const { movie, deleted } = this.state
-    let movieJSX
-
-    // 3 states:
-    // If movie is `null`, we are loading
-    if (!movie) {
-      movieJSX = <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"/>
-    } else if (deleted) {
-      movieJSX = <Redirect to="/movies"/>
-    } else {
-      // We have a movie, display it!
-      movieJSX = (
-        <div>
-          <h3>{movie.title}</h3>
-          <p>Director: {movie.director}</p>
-          <p>Year Released: {movie.year}</p>
-          <button onClick={this.delete}>Delete Movie</button>
-          <Link to={`/movies/${this.props.match.params.id}/edit`}>
-            <button>Update Movie</button>
-          </Link>
-        </div>
-      )
-    }
-
-    return (
-      movieJSX
-    )
+  if (deleted) {
+    return <Redirect to={
+      { pathname: '/', state: { msg: 'Movie succesfully deleted!' } }
+    } />
   }
+
+  return (
+    <MainLayout>
+      <h4>{movie.title}</h4>
+      <p>Date relased: {movie.year}</p>
+      <p>Directed by: {movie.director}</p>
+      <button onClick={destroy}>Delete Movie</button>
+      <Link to={`/movies/${props.match.params.id}/edit`}>
+        <button>Edit</button>
+      </Link>
+      <Link to="/movies">Back to all movies</Link>
+    </MainLayout>
+  )
 }
 
 export default Movie

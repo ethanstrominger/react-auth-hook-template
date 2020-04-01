@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import MovieForm from '../MovieForm/MovieForm'
 import MainLayout from '../MainLayout/MainLayout'
-import { saveUpdatedMovie, getMovieById } from '../../api/movieApis.js'
+import { saveUpdatedMovie, getMovie } from '../../api/movieApis.js'
 
 const MovieEdit = props => {
   const [movie, setMovie] = useState({ title: '', director: '', year: '' })
   const [isMovieUpdated, setIsMovieUpdated] = useState(false)
 
   useEffect(() => {
-    getMovieById(props)
+    getMovie(props)
       .then(res => setMovie(res.data.movie))
       .catch(console.error)
   }, [])

@@ -1,74 +1,46 @@
-import React, { Component, Fragment } from 'react'
+import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 
-// Import axios
-import axios from 'axios'
-// Import apiUrl
-import apiUrl from '../../apiConfig'
-
-// Import MovieForm:
+import { createMovie } from '../../api/movieApis'
 import MovieForm from '../MovieForm/MovieForm'
+import MainLayout from '../MainLayout/MainLayout'
 
-class MovieCreate extends Component {
-  constructor () {
-    super()
+const MovieCreate = props => {
+  const [movie, setMovie] = useState({ title: '', director: '', year: '' })
+  const [createdMovieId, setCreatedMovieId] = useState(null)
 
-    this.state = {
-      movie: {
-        title: '',
-        director: '',
-        year: ''
-      },
-      createdId: null
-    }
+  const handleChange = event => {
+    const updatedField = { [event.target.name]: event.target.value }
+    const editedMovie = Object.assign({ ...movie }, updatedField)
+    setMovie(editedMovie)
+
+    // console.log({ ...movie, [event.target.name]: event.target.value })
+
+    // setMovie({ ...movie, [event.target.name]: event.target.value })
   }
 
-  handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault()
 
-    axios({
-      method: 'post',
-      url: `${apiUrl}/movies`,
-      data: { movie: this.state.movie },
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`
-      }
-    })
-      .then(res => {
-        this.setState({ createdId: res.data.movie._id })
-      })
+    createMovie(props, movie)
+      .then(res => setCreatedMovieId(res.data.movie._id))
       .catch(console.error)
   }
 
-  handleChange = (event) => {
-    // create a new object with key of `name` property on input and value with `value` property
-    const updatedField = {
-      [event.target.name]: event.target.value
-    }
-    // Combine the current `movie` with the `updateField`
-    const editedMovie = Object.assign(this.state.movie, updatedField)
-    // Set the state
-    this.setState({ movie: editedMovie })
+  if (createdMovieId) {
+    return <Redirect to={`/movies/${createdMovieId}`} />
   }
 
-  render () {
-    // Destructure from state:
-    const { movie, createdId } = this.state
-    if (createdId) {
-      // Redirect to the 'show' page
-      return <Redirect to={`/movies/${createdId}`}/>
-    }
-    return (
-      <Fragment>
-        <h1>Movie Create page</h1>
-        <MovieForm
-          movie={movie}
-          handleSubmit={this.handleSubmit}
-          handleChange={this.handleChange}
-        />
-      </Fragment>
-    )
-  }
+  return (
+    <MainLayout>
+      <MovieForm
+        movie={movie}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        cancelPath="/"
+      />
+    </MainLayout>
+  )
 }
 
 export default MovieCreate
